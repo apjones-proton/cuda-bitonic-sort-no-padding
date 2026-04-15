@@ -1,7 +1,7 @@
 # CUDA Bitonic Sort for Arbitrary Sizes (No Padding)
 
 A modification of NVIDIA CUDA Samples ([sortingNetworks](https://github.com/NVIDIA/cuda-samples/tree/master/Samples/2_Concepts_and_Techniques/sortingNetworks))
-that implements **true arbitrary-length**  
+that implements **true arbitrary-length**
 bitonic sort (including odd n) **without padding** to the next power of 2.
 
 - In-place sorting
@@ -48,18 +48,19 @@ overall direction. This can be achieved with a small modification to existing co
 >
 >The direction of operations on a particular thread at a particular step is determined by the following expression:
 >```c++
->thread_dir = overall_dir ^ (thread_index & (size / 2));
+>thread_dir = overall_dir ^ bool(thread_index & (size / 2));
 > ```
 >where `size` is the size of each output block of that step in the calculation.
 The direction modifier expression `^(thread_index&(size/2))` flips the direction for certain blocks. We can undo any such flip if it would affect the critical block. The index of the last item
 of data is `arrayLength-1` and the corresponding thread index is `(arrayLength-1)/2`,
 so we can ensure that the critical block has the desired direction by flipping *all* blocks again by what would have been the direction modifier at that block:
 >```c++
->thread_dir = overall_dir ^ (thread_index & (size / 2)) ^ (((arrayLength-1)/2) & (size / 2) );
+>thread_dir = overall_dir ^ bool(thread_index & (size / 2))
+>                   ^ bool(((arrayLength-1)/2) & (size / 2));
 >```
 > This can be simplified to:
 >```c++
->thread_dir = overall_dir ^ ((thread_index ^ ((arrayLength-1)/2)) & (size / 2));
+>thread_dir = overall_dir ^ bool((thread_index ^ ((arrayLength-1)/2)) & (size / 2));
 >```
 
 Once the direction is correctly set for each critical block at every step, all that remains is to not do any
