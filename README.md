@@ -23,7 +23,7 @@ bitonic sort (including odd n) **without padding** to the next power of 2.
 
 The basic idea is to keep the binary structure of the bitonic network, but instead of actually padding the input array,
 we can pretend the padding is there, and then choose a variant of the network that does not exchange any of the dummy
-values, so that we can get away with not doing any comparisons that would involve the dummy data.
+values, so that we can get away with not doing any comparisons that would have involved the dummy data.
 
 When padding is used with a normal bitonic sorting network, an input array is padded with multiple copies of an extreme value at the end, so that after sorting they will again be at the end, from where they can be removed again. However during
 _intermediate_ steps real data may be exchanged into the
@@ -33,8 +33,8 @@ Exchanges between instances of the extreme value within the padding region can b
 The difficult part is ensuring that comparisons between real data and extreme value in the padding region also never
 result in a change of state, so that they can be neglected too.
 
-The trick is to ensure that the any comparisons that cross the end of the real data are always aligned with the overall
-direction of the sort, so that the the extreme values will always be rejected as a candidate for exchange.
+The trick is to ensure that any comparisons that cross the end of the real data are always aligned with the overall
+direction of the sort, so that the extreme dummy values will always be rejected as a candidate for exchange.
 
 Fortunately the bitonic sort network has enough degrees of freedom to allow us to choose that this happens.
 Any merge operation will give the same result whether the inputs are an ascending array then a descending array,
